@@ -2,8 +2,8 @@
 
 ![CI](https://github.com/o-peter/reson-dsp/actions/workflows/ci.yml/badge.svg)
 
-`reson` is a small C++23 DSP utility library focused on real-time-safe audio
-processing primitives. It provides a clean `std::span`-based API, denormal
+`reson` is a small cross-platform C++23 DSP utility library focused on real-time-safe 
+audio processing primitives. It provides a clean `std::span`-based API, denormal
 handling, and measured performance.
 
 The core library is dependency-free and framework-agnostic: it does not depend
