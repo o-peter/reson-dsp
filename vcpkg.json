@@ -1,0 +1,22 @@
+{
+  "name": "reson-dsp",
+  "version-string": "0.1.0",
+  "dependencies": [],
+  "features": {
+    "tests": {
+      "description": "Build tests",
+      "dependencies": [
+        "gtest"
+      ]
+    },
+    "benchmarks": {
+      "description": "Build benchmarks",
+      "dependencies": [
+        {
+          "name": "benchmark",
+          "default-features": false
+        }
+      ]
+    }
+  }
+}

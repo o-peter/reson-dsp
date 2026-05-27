@@ -1,0 +1,60 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "debug",
+      "displayName": "Debug",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_MANIFEST_FEATURES": "tests",
+        "RESON_BUILD_TESTS": "ON",
+        "RESON_BUILD_BENCHMARKS": "OFF"
+      }
+    },
+    {
+      "name": "release",
+      "displayName": "Release",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "RESON_BUILD_EXAMPLES": "ON",
+        "RESON_BUILD_TESTS": "OFF",
+        "RESON_BUILD_BENCHMARKS": "OFF"
+      }
+    },
+    {
+      "name": "release-bench",
+      "displayName": "Release build with tests and benchmarks",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/release-bench",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_MANIFEST_FEATURES": "tests;benchmarks",
+        "RESON_BUILD_EXAMPLES": "ON",
+        "RESON_BUILD_TESTS": "ON",
+        "RESON_BUILD_BENCHMARKS": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "debug",
+      "configurePreset": "debug"
+    },
+    {
+      "name": "release",
+      "configurePreset": "release"
+    },
+    {
+      "name": "release-bench",
+      "configurePreset": "release-bench"
+    }
+  ]
+}
