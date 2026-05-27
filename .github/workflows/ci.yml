@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: ${{ matrix.os }} / ${{ matrix.cpu }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            cpu: x86-generic
+            cflags: "-march=x86-64"
+            cxxflags: "-march=x86-64"
+
+          - os: ubuntu-latest
+            cpu: x86-avx2
+            cflags: "-mavx2"
+            cxxflags: "-mavx2"
+
+          - os: windows-latest
+            cpu: x86-generic
+            cflags: ""
+            cxxflags: ""
+
+          - os: windows-latest
+            cpu: x86-avx2
+            cflags: "/arch:AVX2"
+            cxxflags: "/arch:AVX2"
+
+          - os: macos-latest
+            cpu: arm-neon
+            cflags: ""
+            cxxflags: ""
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Check out vcpkg
+        uses: actions/checkout@v4
+        with:
+          repository: microsoft/vcpkg
+          path: vcpkg
+
+      - name: Bootstrap vcpkg Unix
+        if: runner.os != 'Windows'
+        run: ./vcpkg/bootstrap-vcpkg.sh
+
+      - name: Bootstrap vcpkg Windows
+        if: runner.os == 'Windows'
+        run: .\vcpkg\bootstrap-vcpkg.bat
+
+      - name: Configure
+        env:
+          CFLAGS: ${{ matrix.cflags }}
+          CXXFLAGS: ${{ matrix.cxxflags }}
+        run: >
+          cmake -S . -B build
+          -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
+          -DVCPKG_MANIFEST_FEATURES="tests"
+          -DRESON_BUILD_EXAMPLES=ON
+          -DRESON_BUILD_TESTS=ON
+          -DRESON_BUILD_BENCHMARKS=OFF
+          -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --config Release
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure -C Release
